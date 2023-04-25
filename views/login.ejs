@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sport Scheduler</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <div class="signUp h-screen">
+        <div class="grid grid-cols-2 h-full">
+            <div class="left_div">
+                <%- include('logo.ejs') %>
+            </div>
+            <div class="right_div">
+                <img src="/images/signUpHeader.svg" alt="Sport Scheduler Sign Up Header"
+                    class="w-100 mx-auto my-10 mb-20">
+
+                <div class="border border grey-gray-300 drop-shadow-md w-4/6 mx-auto rounded-lg">
+                    <h2 class="text-2xl text-center font-bold underline mt-9">Sign In</h2>
+                    <form action="" class=" text-center  p-10">
+                        <div class="flex py-6">
+                            <label for="email" class="text-right pr-5  text-lg font-medium w-2/6 flex-auto">Email:
+                            </label>
+                            <input type="email" name="email" id="email"
+                                class="border border-gray-500 rounded p-1 w-4/6 flex-none">
+                        </div>
+                        <div class="py-6 flex">
+                            <label for="password" class="text-right pr-5 w-2/6 flex-auto text-lg font-medium">Password:
+                            </label>
+                            <input type="password" name="password" id="password"
+                                class="border border-gray-500 rounded p-1 w-4/6 flex-none">
+                        </div>
+                        <button
+                            class="w-2/6 signUpBtn mt-8  py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                            Log In
+                        </button>
+                    </form>
+                    <p class="text-center mb-10">Don’t have an account! <a href="#"
+                            class="font-medium text-blue-400">Sign
+                            Up</a></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

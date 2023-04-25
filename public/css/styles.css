@@ -1,0 +1,34 @@
+:root {
+  --whiteBlue: #eff4ff;
+  --blue: #aec5eb;
+  --hoverBlue: #81a1d3;
+  --darkBlue: #3a405a;
+  --black: #252125;
+}
+
+body {
+  background-color: var(--whiteBlue);
+  color: var(--black);
+}
+
+.left_div {
+  background-color: var(--blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 60px;
+}
+
+.logo {
+  width: 60%;
+  margin: auto;
+}
+
+.signUpBtn {
+  background-color: var(--blue);
+  color: var(--darkBlue);
+}
+
+.signUpBtn:hover {
+  background-color: var(--hoverBlue);
+}
