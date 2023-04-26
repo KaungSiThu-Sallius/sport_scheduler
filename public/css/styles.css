@@ -3,12 +3,28 @@
   --blue: #aec5eb;
   --hoverBlue: #81a1d3;
   --darkBlue: #3a405a;
+  --green: #79745c;
   --black: #252125;
 }
 
 body {
   background-color: var(--whiteBlue);
   color: var(--black);
+}
+
+.para {
+  color: var(--green);
+}
+
+.bg {
+  background-color: var(--hoverBlue);
+}
+
+.upperDiv {
+  background-color: var(--whiteBlue);
+  padding-left: 60px !important;
+  padding-bottom: 70px !important;
+  padding-top: 70px !important;
 }
 
 .left_div {
@@ -24,11 +40,33 @@ body {
   margin: auto;
 }
 
-.signUpBtn {
-  background-color: var(--blue);
+.btn {
+  background-color: var(--blue) !important;
   color: var(--darkBlue);
 }
 
-.signUpBtn:hover {
-  background-color: var(--hoverBlue);
+.sportBtn {
+  background-color: var(--darkBlue);
+  color: var(--whiteBlue);
+}
+
+.btn:hover {
+  background-color: var(--hoverBlue) !important;
+  cursor: pointer;
+}
+
+.secondDiv {
+  background-color: var(--blue);
+}
+
+.sessionBox a {
+  border: 1px solid var(--black);
+  width: 500px;
+  padding: 20px;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.sessionBox a span {
+  float: right;
 }

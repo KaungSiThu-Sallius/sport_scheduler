@@ -18,7 +18,7 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", async function (request, response) {
-  response.render("login");
+  response.render("sessionCreate");
 });
 
 module.exports = app;
