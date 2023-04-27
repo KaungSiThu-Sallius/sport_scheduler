@@ -144,6 +144,15 @@ app.post(
   }
 );
 
+app.get("/signOut", (request, response, next) => {
+  request.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    response.redirect("logIn");
+  });
+});
+
 module.exports = app;
 
 // when rendering ejs page
