@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
     <title>Login</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,8 +23,9 @@
                     class="w-100 mx-auto my-10 mb-20">
 
                 <div class="border border grey-gray-300 drop-shadow-md w-4/6 mx-auto rounded-lg">
-                    <h2 class="text-2xl text-center font-bold underline mt-9">Sign In</h2>
-                    <form action="" class=" text-center  p-10">
+                    <h2 class="text-2xl text-center font-bold underline mt-9">Log In</h2>
+                    <form action="/session" method="post" class=" text-center  p-10">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <div class="flex py-6">
                             <label for="email" class="text-right pr-5  text-lg font-medium w-2/6 flex-auto">Email:
                             </label>
@@ -41,7 +43,7 @@
                             Log In
                         </button>
                     </form>
-                    <p class="text-center mb-10">Don’t have an account! <a href="#"
+                    <p class="text-center mb-10">Don’t have an account! <a href="/signUp"
                             class="font-medium text-blue-400">Sign
                             Up</a></p>
                 </div>

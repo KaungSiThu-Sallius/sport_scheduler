@@ -46,8 +46,8 @@ body {
 }
 
 .sportBtn {
-  background-color: var(--darkBlue);
-  color: var(--whiteBlue);
+  background-color: var(--darkBlue) !important;
+  color: var(--whiteBlue) !important;
 }
 
 .btn:hover {
@@ -69,4 +69,14 @@ body {
 
 .sessionBox a span {
   float: right;
+}
+
+.nameBox {
+  border: 1px solid var(--black);
+  padding: 12px 15px;
+  margin-right: 15px;
+}
+
+.nameBox a {
+  margin-left: 20px;
 }

@@ -5,10 +5,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
     <title>Sign Up</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/styles.css">
+
+    <!-- <script>
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    </script> -->
 </head>
 
 <body>
@@ -22,7 +27,8 @@
 
                 <div class="border border grey-gray-300 drop-shadow-md w-4/6 mx-auto rounded-lg">
                     <h2 class="text-2xl text-center font-bold underline mt-9">Sign Up</h2>
-                    <form action="" class=" text-center p-10">
+                    <form action="/users" method="post" class=" text-center p-10">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <div class="py-6 flex">
                             <label for="name" class="text-right pr-5 w-2/6 flex-auto text-lg font-medium">Name:
                             </label>
@@ -54,7 +60,7 @@
                             Register
                         </button>
                     </form>
-                    <p class="text-center mb-10">Don’t have an account! <a href="#"
+                    <p class="text-center mb-10">Don’t have an account! <a href="/login"
                             class="font-medium text-blue-400">Login
                         </a></p>
                 </div>
