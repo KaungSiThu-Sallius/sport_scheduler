@@ -41,18 +41,22 @@ app.use(passport.session());
 passport.use(
   new LocalStrategy(
     {
-      userNameField: "email",
+      usernameField: "email",
       passwordField: "password",
     },
     (username, password, done) => {
       User.findOne({
         where: {
           email: username,
-          password: password,
         },
       })
-        .then((user) => {
-          return done(null, user);
+        .then(async (user) => {
+          const result = await bcrypt.compare(password, user.password);
+          if (result) {
+            return done(null, user);
+          } else {
+            return done("Invalid Password");
+          }
         })
         .catch((error) => {
           return error;
@@ -128,6 +132,17 @@ app.post("/users", async (request, response) => {
     }
   }
 });
+
+app.post(
+  "/session",
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+  }),
+  (request, response) => {
+    console.log(request.user);
+    response.redirect("/");
+  }
+);
 
 module.exports = app;
 
