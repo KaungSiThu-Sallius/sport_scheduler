@@ -8,50 +8,69 @@
     <meta name="csrf-token" content="<%= csrfToken %>">
     <title>Login</title>
 
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
-    <div class="signUp h-screen">
-        <div class="grid grid-cols-2 h-full">
-            <div class="left_div">
-                <%- include('logo.ejs') %>
-            </div>
-            <div class="right_div">
-                <img src="/images/signUpHeader.svg" alt="Sport Scheduler Sign Up Header"
-                    class="w-100 mx-auto my-10 mb-20">
 
-                <div class="border border grey-gray-300 drop-shadow-md w-4/6 mx-auto rounded-lg">
-                    <h2 class="text-2xl text-center font-bold underline mt-9">Log In</h2>
-                    <form action="/session" method="post" class=" text-center  p-10">
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <div class="flex py-6">
-                            <label for="email" class="text-right pr-5  text-lg font-medium w-2/6 flex-auto">Email:
-                            </label>
-                            <input type="email" name="email" id="email"
-                                class="border border-gray-500 rounded p-1 w-4/6 flex-none">
-                        </div>
-                        <div class="py-6 flex">
-                            <label for="password" class="text-right pr-5 w-2/6 flex-auto text-lg font-medium">Password:
-                            </label>
-                            <input type="password" name="password" id="password"
-                                class="border border-gray-500 rounded p-1 w-4/6 flex-none">
-                        </div>
-                        <button
-                            class="w-2/6 btn mt-8  py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
-                            Log In
-                        </button>
-                    </form>
-                    <p class="text-center mb-10">Don’t have an account! <a href="/signUp"
-                            class="font-medium text-blue-400">Sign
-                            Up</a></p>
-                </div>
-
-            </div>
+    <% if(messages.error){ %>
+        <div class="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 warnedAlert" role="alert">
+            <p class="font-bold">
+                <%=messages.error %>
+            </p>
         </div>
-    </div>
+        <% } %>
+            <div class="signUp h-screen">
+                <div class="grid grid-cols-2 h-full">
+                    <div class="left_div">
+                        <%- include('logo.ejs') %>
+                    </div>
+                    <div class="right_div">
+                        <img src="/images/signUpHeader.svg" alt="Sport Scheduler Sign Up Header"
+                            class="w-100 mx-auto my-10 mb-20">
 
+                        <div class="border border grey-gray-300 drop-shadow-md w-4/6 mx-auto rounded-lg">
+                            <h2 class="text-2xl text-center font-bold underline mt-9">Log In</h2>
+                            <form action="/session" method="post" class=" text-center  p-10">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <div class="flex py-6">
+                                    <label for="email"
+                                        class="text-right pr-5  text-lg font-medium w-2/6 flex-auto">Email:
+                                    </label>
+                                    <input type="email" name="email" id="email"
+                                        class="border border-gray-500 rounded p-1 w-4/6 flex-none">
+                                </div>
+                                <div class="py-6 flex">
+                                    <label for="password"
+                                        class="text-right pr-5 w-2/6 flex-auto text-lg font-medium">Password:
+                                    </label>
+                                    <input type="password" name="password" id="password"
+                                        class="border border-gray-500 rounded p-1 w-4/6 flex-none">
+                                </div>
+                                <button
+                                    class="w-2/6 btn mt-8  py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                                    Log In
+                                </button>
+                            </form>
+
+                            <p class="text-center mb-10">Don’t have an account! <a href="/signUp"
+                                    class="font-medium text-blue-400">Sign
+                                    Up</a></p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <script>
+                setTimeout(function () {
+                    $('.warnedAlert').hide();
+                }, 3000);
+            </script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
+                integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 </html>

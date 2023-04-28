@@ -49,8 +49,21 @@ describe("Sport Scheduler", function () {
       email: "kaung@test.com",
       password: "1234",
       c_password: "1234",
+      isAdmin: true,
       _csrf: csrfToken,
     });
     expect(res.statusCode).toBe(302);
+  });
+
+  test("Creates a new sport", async () => {
+    const agent = request.agent(server);
+    await login(agent, "kaung@test.com", "1234");
+    const res = await agent.get("/createSport");
+    const csrfToken = extractCsrfToken(res);
+    const response = await agent.post("/createSport").send({
+      name: "Football",
+      _csrf: csrfToken,
+    });
+    expect(response.statusCode).toBe(302);
   });
 });

@@ -6,6 +6,12 @@ const app = express();
 
 const { User, Sport } = require("./models");
 
+const flash = require("connect-flash");
+const path = require("path");
+// eslint-disable-next-line no-undef
+app.set("views", path.join(__dirname, "views"));
+app.use(flash());
+
 //csrf
 var csrf = require("tiny-csrf");
 var cookieParser = require("cookie-parser");
@@ -55,11 +61,11 @@ passport.use(
           if (result) {
             return done(null, user);
           } else {
-            return done("Invalid Password");
+            return done(null, false, { message: "Incorrect Password" });
           }
         })
         .catch((error) => {
-          return error;
+          return done(null, false, { message: "Incorrect Email" });
         });
     }
   )
@@ -107,6 +113,12 @@ app.get("/", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
   response.render("player/index", {
     user,
   });
+});
+
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+
+  next();
 });
 
 app.get(
@@ -163,6 +175,10 @@ app.get("/login", (request, response) => {
 app.post("/users", async (request, response) => {
   let _password = request.body.password;
   let cPassword = request.body.c_password;
+  let isAdmin = 0;
+  if (request.body.isAdmin != null) {
+    isAdmin = 1;
+  }
   if (_password == cPassword) {
     const hashPwd = await bcrypt.hash(_password, saltRounds);
     try {
@@ -170,7 +186,7 @@ app.post("/users", async (request, response) => {
         name: request.body.name,
         email: request.body.email,
         password: hashPwd,
-        isAdmin: 0,
+        isAdmin: isAdmin,
       });
       request.login(user, (err) => {
         if (err) {
@@ -188,6 +204,7 @@ app.post(
   "/session",
   passport.authenticate("local", {
     failureRedirect: "/login",
+    failureFlash: true,
   }),
   (request, response) => {
     console.log(request.user);
