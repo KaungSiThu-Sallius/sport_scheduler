@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
     <title>Sport Create</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/styles.css">
@@ -45,11 +46,12 @@
         <h1 class="mx-14 py-4 text-3xl font-semibold">Create New Sport</h1>
     </div>
     <div class="thirdDiv">
-        <form class="w-3/6 mb-6 mx-14 py-8">
+        <form class="w-3/6 mb-6 mx-14 py-8" action="/createSport" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div class="">
-                <label for="email" class="block mb-4 text-xl font-medium ">What is Sport's
+                <label for="name" class="block mb-4 text-xl font-medium ">What is Sport's
                     name?</label>
-                <input type="email" id="email"
+                <input type="text" id="name" name="name"
                     class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required>
             </div>

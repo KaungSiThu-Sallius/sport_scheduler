@@ -4,7 +4,7 @@
 const express = require("express");
 const app = express();
 
-const { User } = require("./models");
+const { User, Sport } = require("./models");
 
 //csrf
 var csrf = require("tiny-csrf");
@@ -80,6 +80,15 @@ passport.deserializeUser((id, done) => {
     });
 });
 
+// multiuser
+function requireAdmin(req, res, next) {
+  if (req.user && req.user.isAdmin == true) {
+    return next();
+  } else {
+    res.status(401).json({ message: "Unauthorized user." });
+  }
+}
+
 //for use ejs file
 app.set("view engine", "ejs");
 
@@ -94,8 +103,50 @@ app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
 app.get("/", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
-  response.render("player/index");
+  const user = request.user;
+  response.render("player/index", {
+    user,
+  });
 });
+
+app.get(
+  "/admin",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  (request, response) => {
+    const user = request.user;
+    response.render("admin/index", {
+      user,
+    });
+  }
+);
+
+app.get(
+  "/createSport",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  (request, response) => {
+    response.render("admin/sportCreate", {
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.post(
+  "/createSport",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  async (request, response) => {
+    try {
+      const sport = await Sport.create({
+        name: request.body.name,
+      });
+      response.redirect("/admin");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 
 app.get("/signUp", (request, response) => {
   response.render("signup", {
@@ -140,7 +191,11 @@ app.post(
   }),
   (request, response) => {
     console.log(request.user);
-    response.redirect("/");
+    if (request.user.isAdmin) {
+      response.redirect("/admin");
+    } else {
+      response.redirect("/");
+    }
   }
 );
 
