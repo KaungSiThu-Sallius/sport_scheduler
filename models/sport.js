@@ -16,6 +16,14 @@ module.exports = (sequelize, DataTypes) => {
     static addSport({ name }) {
       return this.create({ name: name });
     }
+
+    static async getSportName() {
+      return this.findAll();
+    }
+
+    static async specificSport(id) {
+      return this.findByPk(id);
+    }
   }
   Sport.init(
     {

@@ -124,10 +124,12 @@ app.get(
   "/admin",
   connectEnsureLogin.ensureLoggedIn(),
   requireAdmin,
-  (request, response) => {
+  async (request, response) => {
     const user = request.user;
+    const sportName = await Sport.getSportName();
     response.render("admin/index", {
       user,
+      sportName,
     });
   }
 );
@@ -226,6 +228,19 @@ app.get("/signOut", (request, response, next) => {
     response.redirect("logIn");
   });
 });
+
+app.get(
+  "/sportEdit/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const sportDetail = await Sport.specificSport(request.params.id);
+    const user = request.user;
+    response.render("sportEdit", {
+      user,
+      sportDetail,
+    });
+  }
+);
 
 module.exports = app;
 
