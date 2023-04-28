@@ -12,34 +12,51 @@
 </head>
 
 <body>
-    <div class="bg h-screen">
-        <div class="upperDiv grid grid-rows-3 gap-3 p-10">
-            <div>
-                <h1 class="text-5xl font-medium inline-block">Welcome <%= user.name %>!</h1>
-                <a href="/signOut"
-                    class="float-right btn mt-4 mr-10  py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Sign
-                    Out</a>
-            </div>
-            <div>
-                <p class="para text-xl">Sign In as Adminstrator</p>
-            </div>
-            <div> <a href="/createSport"
-                    class="btn mt-8  text-lg w-1/6 py-2 px-5 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Create
-                    a new sport</a></div>
-            <div> <a
-                    class="btn text-lg mt-8  w-2/6 py-2 px-10 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">View
-                    Reports</a></div>
+    <% if(messages.success){ %>
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 warnedAlert" role="alert">
+            <p class="font-bold">
+                <%=messages.success %>
+            </p>
         </div>
-        <div class="pl-14 py-10 lowerDiv">
-            <div>
-                <p class="mb-5 text-xl text-gray-700">The following sports are available. Please select one: </p>
+        <% } %>
+            <div class="bg h-screen">
+                <div class="upperDiv grid grid-rows-3 gap-3 p-10">
+                    <div>
+                        <h1 class="text-5xl font-medium inline-block">Welcome <%= user.name %>!</h1>
+                        <a href="/signOut"
+                            class="float-right btn mt-4 mr-10  py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Sign
+                            Out</a>
+                    </div>
+                    <div>
+                        <p class="para text-xl">Sign In as Adminstrator</p>
+                    </div>
+                    <div> <a href="/createSport"
+                            class="btn mt-8  text-lg w-1/6 py-2 px-5 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Create
+                            a new sport</a></div>
+                    <div> <a
+                            class="btn text-lg mt-8  w-2/6 py-2 px-10 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">View
+                            Reports</a></div>
+                </div>
+                <div class="pl-14 py-10 lowerDiv">
+                    <div>
+                        <p class="mb-5 text-xl text-gray-700">The following sports are available. Please select one:
+                        </p>
+                    </div>
+                    <div>
+                        <a href="#" class="underline text-2xl block pb-2">Cricket</a>
+                        <a href="#" class="underline text-2xl block pb-2">Football</a>
+                    </div>
+                </div>
             </div>
-            <div>
-                <a href="#" class="underline text-2xl block pb-2">Cricket</a>
-                <a href="#" class="underline text-2xl block pb-2">Football</a>
-            </div>
-        </div>
-    </div>
+            <script>
+                setTimeout(function () {
+                    $('.warnedAlert').hide();
+                }, 3000);
+            </script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
+                integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
 </body>
 
 </html>

@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "sportId",
       });
     }
+
+    static addSport({ name }) {
+      return this.create({ name: name });
+    }
   }
   Sport.init(
     {

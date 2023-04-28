@@ -86,6 +86,11 @@ passport.deserializeUser((id, done) => {
     });
 });
 
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
+
 // multiuser
 function requireAdmin(req, res, next) {
   if (req.user && req.user.isAdmin == true) {
@@ -113,12 +118,6 @@ app.get("/", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
   response.render("player/index", {
     user,
   });
-});
-
-app.use(function (request, response, next) {
-  response.locals.messages = request.flash();
-
-  next();
 });
 
 app.get(
@@ -150,9 +149,10 @@ app.post(
   requireAdmin,
   async (request, response) => {
     try {
-      const sport = await Sport.create({
+      const sport = await Sport.addSport({
         name: request.body.name,
       });
+      request.flash("success", "Sport created successfully!");
       response.redirect("/admin");
     } catch (err) {
       console.log(err);
@@ -182,16 +182,18 @@ app.post("/users", async (request, response) => {
   if (_password == cPassword) {
     const hashPwd = await bcrypt.hash(_password, saltRounds);
     try {
-      const user = await User.create({
+      const user = await User.addUser({
         name: request.body.name,
         email: request.body.email,
-        password: hashPwd,
+        pwd: hashPwd,
         isAdmin: isAdmin,
       });
+
       request.login(user, (err) => {
         if (err) {
           console.log(err);
         }
+        request.flash("success", "Successfully Registered!");
         response.redirect("/");
       });
     } catch (err) {
