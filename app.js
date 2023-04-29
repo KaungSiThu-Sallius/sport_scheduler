@@ -3,6 +3,8 @@
 // initialize express
 const express = require("express");
 const app = express();
+var methodOverride = require("method-override");
+app.use(methodOverride("_method"));
 
 const { User, Sport } = require("./models");
 
@@ -230,15 +232,64 @@ app.get("/signOut", (request, response, next) => {
 });
 
 app.get(
-  "/sportEdit/:id",
+  "/sportDetail/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const sportDetail = await Sport.specificSport(request.params.id);
     const user = request.user;
-    response.render("sportEdit", {
+    response.render("sportDetail", {
       user,
       sportDetail,
+      csrfToken: request.csrfToken(),
     });
+  }
+);
+
+app.get(
+  "/sportEdit/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  async (request, response) => {
+    const user = request.user;
+    const sportDetail = await Sport.specificSport(request.params.id);
+    response.render("admin/sportEdit", {
+      user,
+      sportDetail,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.put(
+  "/sportEdit/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  async function (request, response) {
+    var name = request.body.name;
+    var id = request.params.id;
+    try {
+      await Sport.editSport(name, id);
+      request.flash("success", "Successfully updated!");
+      response.redirect("/sportDetail/" + id);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.delete(
+  "/sportEdit/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  async function (request, response) {
+    try {
+      await Sport.remove(request.params.id);
+      request.flash("success", "Successfully deleted!");
+      response.redirect("/admin");
+    } catch (error) {
+      return response.status(422).json(error);
+    }
   }
 );
 

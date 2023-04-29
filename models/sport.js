@@ -24,6 +24,25 @@ module.exports = (sequelize, DataTypes) => {
     static async specificSport(id) {
       return this.findByPk(id);
     }
+
+    static async editSport(name, id) {
+      return this.update(
+        { name: name },
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
+    }
+
+    static async remove(id) {
+      return this.destroy({
+        where: {
+          id,
+        },
+      });
+    }
   }
   Sport.init(
     {
