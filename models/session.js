@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Session extends Model {
     /**
@@ -10,6 +10,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Session.belongsTo(models.Sport, {
         foreignKey: "sportId",
+      });
+    }
+
+    static addSession({ place, dateTime, players, slot, sportId }) {
+      return this.create({ place, dateTime, players, slot, sportId });
+    }
+
+    static getSessionDetail(sportId) {
+      return this.findAll({
+        where: {
+          sportId,
+          dateTime: {
+            [Op.gt]: new Date(),
+          },
+        },
       });
     }
   }

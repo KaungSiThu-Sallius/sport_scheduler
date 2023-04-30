@@ -6,7 +6,9 @@ const app = express();
 var methodOverride = require("method-override");
 app.use(methodOverride("_method"));
 
-const { User, Sport } = require("./models");
+var moment = require("moment");
+
+const { User, Sport, Session } = require("./models");
 
 const flash = require("connect-flash");
 const path = require("path");
@@ -237,9 +239,12 @@ app.get(
   async (request, response) => {
     const sportDetail = await Sport.specificSport(request.params.id);
     const user = request.user;
+    const session = await Session.getSessionDetail(request.params.id);
     response.render("sportDetail", {
       user,
       sportDetail,
+      session,
+      moment: moment,
       csrfToken: request.csrfToken(),
     });
   }
@@ -302,6 +307,41 @@ app.get("/getSportJson", async function (request, response) {
     return response.status(422).json(error);
   }
 });
+
+app.get(
+  "/sessionCreate/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    const user = request.user;
+    const sportDetail = await Sport.specificSport(request.params.id);
+    response.render("sessionCreate", {
+      user,
+      sportDetail,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.post(
+  "/sessionCreate/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    let sportId = request.params.id;
+    try {
+      const session = await Session.addSession({
+        place: request.body.place,
+        dateTime: request.body.dateTime,
+        players: request.body.players,
+        slot: request.body.slot,
+        sportId: sportId,
+      });
+      request.flash("success", "Session created successfully!");
+      response.redirect("/sportDetail/" + sportId);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 
 module.exports = app;
 
