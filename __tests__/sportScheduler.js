@@ -103,4 +103,38 @@ describe("Sport Scheduler", function () {
 
     expect(afterUpdate).toBe("Footballs");
   });
+
+  test("Delete sport", async () => {
+    const agent = request.agent(server);
+    await login(agent, "kaung@test.com", "1234");
+    let res = await agent.get("/createSport");
+    let csrfToken = extractCsrfToken(res);
+    const response = await agent.post("/createSport").send({
+      name: "Football",
+      _csrf: csrfToken,
+    });
+
+    let groupedSportResponse = await agent
+      .get("/getSportJson")
+      .set("Accept", "application/json");
+    let parsedGroupedResponse = JSON.parse(groupedSportResponse.text);
+    let beforeDeleteCount = parsedGroupedResponse.length;
+    let latestSport = parsedGroupedResponse[beforeDeleteCount - 1];
+
+    res = await agent.get(`/sportDetail/${latestSport.id}`);
+    csrfToken = extractCsrfToken(res);
+
+    await agent.delete(`/sportEdit/${latestSport.id}`).send({
+      _csrf: csrfToken,
+    });
+
+    groupedSportResponse = await agent
+      .get("/getSportJson")
+      .set("Accept", "application/json");
+    parsedGroupedResponse = JSON.parse(groupedSportResponse.text);
+    let afterDeleteCount = parsedGroupedResponse.length;
+    latestSport = parsedGroupedResponse[afterDeleteCount - 1];
+
+    expect(beforeDeleteCount - 1).toBe(afterDeleteCount);
+  });
 });
