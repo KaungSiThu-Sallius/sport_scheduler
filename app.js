@@ -293,6 +293,16 @@ app.delete(
   }
 );
 
+app.get("/getSportJson", async function (request, response) {
+  try {
+    const sports = await Sport.getSportName();
+    return response.json(sports);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
 module.exports = app;
 
 // when rendering ejs page

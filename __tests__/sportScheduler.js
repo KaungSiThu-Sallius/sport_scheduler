@@ -66,4 +66,41 @@ describe("Sport Scheduler", function () {
     });
     expect(response.statusCode).toBe(302);
   });
+
+  test("Update sport", async () => {
+    const agent = request.agent(server);
+    await login(agent, "kaung@test.com", "1234");
+    let res = await agent.get("/createSport");
+    let csrfToken = extractCsrfToken(res);
+    const response = await agent.post("/createSport").send({
+      name: "Football",
+      _csrf: csrfToken,
+    });
+
+    let groupedSportResponse = await agent
+      .get("/getSportJson")
+      .set("Accept", "application/json");
+    let parsedGroupedResponse = JSON.parse(groupedSportResponse.text);
+    let sportCount = parsedGroupedResponse.length;
+    let latestSport = parsedGroupedResponse[sportCount - 1];
+
+    res = await agent.get(`/sportEdit/${latestSport.id}`);
+    csrfToken = extractCsrfToken(res);
+
+    await agent.put(`/sportEdit/${latestSport.id}`).send({
+      _csrf: csrfToken,
+      name: "Footballs",
+    });
+
+    groupedSportResponse = await agent
+      .get("/getSportJson")
+      .set("Accept", "application/json");
+    parsedGroupedResponse = JSON.parse(groupedSportResponse.text);
+    sportCount = parsedGroupedResponse.length;
+    latestSport = parsedGroupedResponse[sportCount - 1];
+
+    let afterUpdate = latestSport.name;
+
+    expect(afterUpdate).toBe("Footballs");
+  });
 });
