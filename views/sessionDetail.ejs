@@ -142,16 +142,21 @@
                     <% if(players.length==0){ %>
                         <p class="text-xl noData">Currently, there is no players joined!</p>
                         <% }else{ %>
+
                             <% for(let i=0;i<players.length;i++){ %>
                                 <div class="nameBox inline-block">
                                     <%= players[i] %>
-                                        <form method="POST" id="removePlayer_<%= players[i] %>" class="inline-block"
-                                            action="/removePlayer/<%= sessionDetail.id %>/<%= players[i] %>?_method=PUT">
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                            <button class="font-bold rmPlayer">
-                                                X
-                                            </button>
-                                        </form>
+                                        <% if(user.name.localeCompare(players[i])==0){ %>
+                                            (Oraganizer)
+                                            <% } %>
+                                                <form method="POST" id="removePlayer_<%= players[i] %>"
+                                                    class="inline-block"
+                                                    action="/removePlayer/<%= sessionDetail.id %>/<%= players[i] %>?_method=PUT">
+                                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                    <button class="font-bold rmPlayer">
+                                                        X
+                                                    </button>
+                                                </form>
 
                                 </div>
                                 <% } %>
@@ -168,6 +173,14 @@
 
                 </div>
             </div>
+            <script>
+                setTimeout(function () {
+                    $('.warnedAlert').hide();
+                }, 3000);
+            </script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
+                integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 </html>

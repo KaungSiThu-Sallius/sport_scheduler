@@ -11,10 +11,13 @@ module.exports = (sequelize, DataTypes) => {
       Session.belongsTo(models.Sport, {
         foreignKey: "sportId",
       });
+      Session.belongsTo(models.User, {
+        foreignKey: "userId",
+      });
     }
 
-    static addSession({ place, dateTime, players, slot, sportId }) {
-      return this.create({ place, dateTime, players, slot, sportId });
+    static addSession({ place, dateTime, players, slot, sportId, userId }) {
+      return this.create({ place, dateTime, players, slot, sportId, userId });
     }
 
     static getSessionDetail(sportId) {
@@ -32,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       return this.findByPk(id);
     }
 
-    static removePlayer(id, players) {
+    static updatePlayer(id, players) {
       return this.update(
         {
           players,
@@ -43,6 +46,14 @@ module.exports = (sequelize, DataTypes) => {
           },
         }
       );
+    }
+
+    static deleteSessionBySport(sportId) {
+      return this.destroy({
+        where: {
+          sportId,
+        },
+      });
     }
   }
   Session.init(

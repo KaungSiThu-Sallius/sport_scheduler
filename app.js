@@ -290,6 +290,7 @@ app.delete(
   async function (request, response) {
     try {
       await Sport.remove(request.params.id);
+      await Session.deleteSessionBySport(request.params.id);
       request.flash("success", "Successfully deleted!");
       response.redirect("/admin");
     } catch (error) {
@@ -327,6 +328,7 @@ app.post(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     let sportId = request.params.id;
+    const user = request.user;
     try {
       const session = await Session.addSession({
         place: request.body.place,
@@ -334,6 +336,7 @@ app.post(
         players: request.body.players,
         slot: request.body.slot,
         sportId: sportId,
+        userId: user.id,
       });
       request.flash("success", "Session created successfully!");
       response.redirect("/sportDetail/" + sportId);
@@ -351,7 +354,11 @@ app.get(
     const sessionDetail = await Session.getSpecificSession(request.params.id);
     const sportDetail = await Sport.specificSport(sessionDetail.sportId);
     let isJoined = await UserSession.isJoinded(user.id, sessionDetail.id);
-    let players = sessionDetail.players.split(",");
+    let players = [];
+    if (sessionDetail.players.length != 0) {
+      players = sessionDetail.players.split(",");
+    }
+
     let usersJoined = await UserSession.usersJoined(user.id, sessionDetail.id);
     if (isJoined.length != 0) {
       players.push(user.name);
@@ -362,7 +369,6 @@ app.get(
         players.push(specificUser.name);
       }
     }
-
     response.render("sessionDetail", {
       isJoined,
       user,
@@ -421,7 +427,7 @@ app.put(
         }
       }
       players = players.toString();
-      await Session.removePlayer(request.params.id, players);
+      await Session.updatePlayer(request.params.id, players);
       request.flash("success", "You have removed the player!");
       response.redirect("/sessionDetail/" + request.params.id);
     } catch (error) {
