@@ -27,6 +27,23 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static getSpecificSession(id) {
+      return this.findByPk(id);
+    }
+
+    static removePlayer(id, players) {
+      return this.update(
+        {
+          players,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+    }
   }
   Session.init(
     {

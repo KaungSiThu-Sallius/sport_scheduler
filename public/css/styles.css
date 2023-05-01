@@ -105,3 +105,15 @@ body {
   right: 0;
   width: 300px;
 }
+
+.noData {
+  color: var(--green);
+  font-weight: bold;
+  border: 1px solid var(--green);
+  width: 400px;
+  padding: 20px;
+}
+
+.rmPlayer {
+  cursor: pointer;
+}

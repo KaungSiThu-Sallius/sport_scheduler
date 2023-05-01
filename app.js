@@ -8,7 +8,7 @@ app.use(methodOverride("_method"));
 
 var moment = require("moment");
 
-const { User, Sport, Session } = require("./models");
+const { User, Sport, Session, UserSession } = require("./models");
 
 const flash = require("connect-flash");
 const path = require("path");
@@ -339,6 +339,93 @@ app.post(
       response.redirect("/sportDetail/" + sportId);
     } catch (err) {
       console.log(err);
+    }
+  }
+);
+
+app.get(
+  "/sessionDetail/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    const user = request.user;
+    const sessionDetail = await Session.getSpecificSession(request.params.id);
+    const sportDetail = await Sport.specificSport(sessionDetail.sportId);
+    let isJoined = await UserSession.isJoinded(user.id, sessionDetail.id);
+    let players = sessionDetail.players.split(",");
+    let usersJoined = await UserSession.usersJoined(user.id, sessionDetail.id);
+    if (isJoined.length != 0) {
+      players.push(user.name);
+    }
+    if (usersJoined.length != 0) {
+      for (let i = 0; i < usersJoined.length; i++) {
+        let specificUser = await User.getName(usersJoined[i].userId);
+        players.push(specificUser.name);
+      }
+    }
+
+    response.render("sessionDetail", {
+      isJoined,
+      user,
+      moment: moment,
+      sessionDetail,
+      sportDetail,
+      players,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.delete(
+  "/leaveSession/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    try {
+      await UserSession.userLeave(request.user.id, request.params.id);
+      request.flash("success", "You have leaved your session!");
+      return response.json({
+        success: true,
+      });
+    } catch (error) {
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.post(
+  "/joinSession/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    try {
+      await UserSession.joinSession(request.user.id, request.params.id);
+      request.flash("success", "You have joined this session!");
+      return response.json({
+        success: true,
+      });
+    } catch (error) {
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.put(
+  "/removePlayer/:id/:name",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    try {
+      const sessionDetail = await Session.getSpecificSession(request.params.id);
+      let players = sessionDetail.players.split(",");
+      let name = request.params.name;
+      for (let i = 0; i < players.length; i++) {
+        if (name.localeCompare(players[i]) == 0) {
+          players.splice(i, 1);
+        }
+      }
+      players = players.toString();
+      await Session.removePlayer(request.params.id, players);
+      request.flash("success", "You have removed the player!");
+      response.redirect("/sessionDetail/" + request.params.id);
+    } catch (error) {
+      return response.status(422).json(error);
     }
   }
 );

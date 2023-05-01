@@ -93,21 +93,26 @@
             <div class="thirdDiv">
                 <h3 class="mx-14 py-4 mt-6 font-medium text-xl">Upcoming Sessions</h3>
                 <div class="mx-14 py-4 sessionBox grid grid-cols-2 gap-2">
-                    <% for(let i=0; i<session.length; i++){ %>
-                        <a href="#">
-                            <%= moment(session[i].dateTime).format('Do MMMM, YYYY | hh:mm A') %>
-                                <% if(session[i].slot==1){ %>
-                                    <span class="text-red-700">Last Slot</span>
-                                    <% }else if(session[i].slot==0){%>
-                                        <span class="text-red-700">Full Slot</span>
-                                        <%}else{%>
-                                            <span>
-                                                <%= session[i].slot %> Slot
-                                            </span>
-                                            <%} %>
+                    <% if(session.length==0){ %>
+                        <p class="text-xl noData">Currently, there is no sessions!</p>
+                        <% }else{ %>
+                            <% for(let i=0; i<session.length; i++){ %>
+                                <a href="/sessionDetail/<%= session[i].id %>">
+                                    <%= moment(session[i].dateTime).format('Do MMMM, YYYY | hh:mm A') %>
+                                        <% if(session[i].slot==1){ %>
+                                            <span class="text-red-700">Last Slot</span>
+                                            <% }else if(session[i].slot==0){%>
+                                                <span class="text-red-700">Full Slot</span>
+                                                <%}else{%>
+                                                    <span>
+                                                        <%= session[i].slot %> Slot
+                                                    </span>
+                                                    <%} %>
 
-                        </a>
-                        <% } %>
+                                </a>
+                                <% } %>
+                                    <% } %>
+
                 </div>
                 <div class="mx-14 py-4">
                     <a href="/sessionCreate/<%=  sportDetail.id  %>" class="underline text-lg block pb-2">Create a new

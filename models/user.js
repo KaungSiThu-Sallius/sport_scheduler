@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         isAdmin: isAdmin,
       });
     }
+
+    static async getName(id) {
+      return this.findByPk(id);
+    }
   }
   User.init(
     {

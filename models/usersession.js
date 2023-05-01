@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class UserSession extends Model {
     /**
@@ -9,6 +9,42 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+    }
+
+    static async isJoinded(userId, sessionId) {
+      return this.findAll({
+        where: {
+          userId,
+          sessionId,
+        },
+      });
+    }
+
+    static async usersJoined(userId, sessionId) {
+      return this.findAll({
+        where: {
+          userId: {
+            [Op.ne]: userId,
+          },
+          sessionId,
+        },
+      });
+    }
+
+    static async userLeave(userId, sessionId) {
+      return this.destroy({
+        where: {
+          userId,
+          sessionId,
+        },
+      });
+    }
+
+    static async joinSession(userId, sessionId) {
+      return this.create({
+        userId,
+        sessionId,
+      });
     }
   }
   UserSession.init(
