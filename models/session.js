@@ -55,6 +55,25 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async editSession({
+      place,
+      dateTime,
+      players,
+      slot,
+      sportId,
+      userId,
+      sessionId,
+    }) {
+      return this.update(
+        { place, dateTime, players, slot, sportId, userId },
+        {
+          where: {
+            id: sessionId,
+          },
+        }
+      );
+    }
   }
   Session.init(
     {

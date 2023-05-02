@@ -358,7 +358,7 @@ app.get(
     if (sessionDetail.players.length != 0) {
       players = sessionDetail.players.split(",");
     }
-
+    let originalLength = players.length;
     let usersJoined = await UserSession.usersJoined(user.id, sessionDetail.id);
     if (isJoined.length != 0) {
       players.push(user.name);
@@ -376,6 +376,7 @@ app.get(
       sessionDetail,
       sportDetail,
       players,
+      originalLength,
       csrfToken: request.csrfToken(),
     });
   }
@@ -431,6 +432,48 @@ app.put(
       request.flash("success", "You have removed the player!");
       response.redirect("/sessionDetail/" + request.params.id);
     } catch (error) {
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.get(
+  "/sessionEdit/:id/:sportId",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    const user = request.user;
+    const sportDetail = await Sport.specificSport(request.params.sportId);
+    const sessionDetail = await Session.getSpecificSession(request.params.id);
+    let dateTime = moment(sessionDetail.dateTime).format("YYYY-MM-DDTHH:mm");
+    response.render("sessionEdit", {
+      user,
+      sportDetail,
+      sessionDetail,
+      dateTime,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.put(
+  "/sessionEdit/:id/:sportId",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  async function (request, response) {
+    try {
+      await Session.editSession({
+        place: request.body.place,
+        dateTime: request.body.dateTime,
+        players: request.body.players,
+        slot: request.body.slot,
+        sessionId: request.params.id,
+        sportId: request.params.sportId,
+        userId: request.user.id,
+      });
+      request.flash("success", "Successfully updated!");
+      response.redirect("/sessionDetail/" + request.params.id);
+    } catch (error) {
+      console.log(error);
       return response.status(422).json(error);
     }
   }

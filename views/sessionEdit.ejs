@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <title>Session Edit</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <div class="firstDiv">
+        <nav class="mx-14 py-4 flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <% let homeLink=user.isAdmin==true ? "/admin" : "/" ; %>
+                        <a href="<%= homeLink %>"
+                            class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-700 dark:hover:text-gray-500">
+                            <svg aria-hidden="true" class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z">
+                                </path>
+                            </svg>
+                            Home
+                        </a>
+                </li>
+                <li>
+                    <a href="/sportDetail/<%= sportDetail.id %>">
+                        <div class="flex items-center">
+                            <svg aria-hidden="true" class="w-6 h-6 text-gray-500" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="ml-1 text-sm font-medium text-gray-700 md:ml-2 dark:text-gray-700">
+                                <%= sportDetail.name %>
+                            </span>
+                        </div>
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <svg aria-hidden="true" class="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="ml-1 text-sm font-medium text-gray-700 md:ml-2 dark:text-gray-700">Edit
+                            Session</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+    </div>
+    <div class="secondDiv">
+        <h1 class="mx-14 py-4 text-3xl font-semibold">Edit <%= sportDetail.name %> Session #<%= sessionDetail.id %>
+        </h1>
+    </div>
+    <div class="thirdDiv">
+        <h3 class="mx-14 py-4 mt-6 font-medium text-xl">Edit Session</h3>
+
+        <!-- 2023-05-17T13:05 -->
+
+        <form class="mx-14 py-4" method="POST"
+            action="/sessionEdit/<%= sessionDetail.id %>/<%= sportDetail.id %>?_method=PUT">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="dateTime">
+                    When will this sport be held?
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="dateTime" type="datetime-local" name="dateTime" value="<%= dateTime %>">
+
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="place">
+                    Where will this session be played?
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="place" type="text" name="place" value="<%= sessionDetail.place %>">
+
+            </div>
+
+            <div class=" mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="players">
+                    Who will join you in this session? (comma - separated)
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="players" type="text" name="players" value="<%= sessionDetail.players %>">
+
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="need">
+                    How many more players do you need?
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="need" type="number" name="slot" value="<%= sessionDetail.slot %>">
+
+            </div>
+            <div class="mt-10 flex items-center justify-between">
+                <button class="w-full btn font-bold py-2 px-4 rounded" type="submit">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
