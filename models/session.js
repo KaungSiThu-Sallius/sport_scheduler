@@ -31,6 +31,17 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    static getPreviousSessionDetail(sportId) {
+      return this.findAll({
+        where: {
+          sportId,
+          dateTime: {
+            [Op.lt]: new Date(),
+          },
+        },
+      });
+    }
+
     static getSpecificSession(id) {
       return this.findByPk(id);
     }

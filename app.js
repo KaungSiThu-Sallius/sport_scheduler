@@ -507,6 +507,59 @@ app.delete(
   }
 );
 
+app.get(
+  "/sportPreviousSessionDetail/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const sportDetail = await Sport.specificSport(request.params.id);
+    const user = request.user;
+    const session = await Session.getPreviousSessionDetail(request.params.id);
+    response.render("sportDetailPreviousSession", {
+      user,
+      sportDetail,
+      session,
+      moment: moment,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.get(
+  "/sessionPreviousDetail/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    const user = request.user;
+    const sessionDetail = await Session.getSpecificSession(request.params.id);
+    const sportDetail = await Sport.specificSport(sessionDetail.sportId);
+    let isJoined = await UserSession.isJoinded(user.id, sessionDetail.id);
+    let players = [];
+    if (sessionDetail.players.length != 0) {
+      players = sessionDetail.players.split(",");
+    }
+    let originalLength = players.length;
+    let usersJoined = await UserSession.usersJoined(user.id, sessionDetail.id);
+    if (isJoined.length != 0) {
+      players.push(user.name);
+    }
+    if (usersJoined.length != 0) {
+      for (let i = 0; i < usersJoined.length; i++) {
+        let specificUser = await User.getName(usersJoined[i].userId);
+        players.push(specificUser.name);
+      }
+    }
+    response.render("previousSessionDetail", {
+      isJoined,
+      user,
+      moment: moment,
+      sessionDetail,
+      sportDetail,
+      players,
+      originalLength,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
 module.exports = app;
 
 // when rendering ejs page
