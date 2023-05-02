@@ -82,6 +82,10 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+
+    static async getData() {
+      return this.findAll();
+    }
   }
   Session.init(
     {

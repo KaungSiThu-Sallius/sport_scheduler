@@ -167,4 +167,54 @@ describe("Sport Scheduler", function () {
     });
     expect(response.statusCode).toBe(302);
   });
+
+  test("Update session", async () => {
+    const agent = request.agent(server);
+    await login(agent, "kaung@test.com", "1234");
+
+    let groupedSportResponse = await agent
+      .get("/getSportJson")
+      .set("Accept", "application/json");
+    let parsedGroupedResponse = JSON.parse(groupedSportResponse.text);
+    let sportCount = parsedGroupedResponse.length;
+    let latestSport = parsedGroupedResponse[sportCount - 1];
+
+    let res = await agent.get(`/sessionCreate/${latestSport.id}`);
+    let csrfToken = extractCsrfToken(res);
+    let response = await agent.post(`/sessionCreate/${latestSport.id}`).send({
+      place: "Marwadi Backyard",
+      dateTime: "2023-05-01 15:55:00+05:30",
+      players: "Sim,Loki,Thor",
+      slot: 5,
+      _csrf: csrfToken,
+    });
+
+    let groupedSessionResponse = await agent
+      .get("/getSessionJson")
+      .set("Accept", "application/json");
+    parsedGroupedResponse = JSON.parse(groupedSessionResponse.text);
+    let SessionCount = parsedGroupedResponse.length;
+    let latestSession = parsedGroupedResponse[SessionCount - 1];
+
+    let targetUpdateSlot = 5;
+
+    await agent.put(`/sessionEdit/${latestSession.id}/${latestSport.id}`).send({
+      place: "Marwadi Backyard",
+      dateTime: "2023-05-01 15:55:00+05:30",
+      players: "Sim,Loki,Thor",
+      slot: targetUpdateSlot,
+      _csrf: csrfToken,
+    });
+
+    groupedSessionResponse = await agent
+      .get("/getSessionJson")
+      .set("Accept", "application/json");
+    parsedGroupedResponse = JSON.parse(groupedSessionResponse.text);
+    SessionCount = parsedGroupedResponse.length;
+    latestSession = parsedGroupedResponse[SessionCount - 1];
+
+    let afterUpdate = latestSession.slot;
+
+    expect(afterUpdate).toBe(targetUpdateSlot);
+  });
 });

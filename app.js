@@ -119,9 +119,13 @@ app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
 app.get("/", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
   const user = request.user;
-  response.render("player/index", {
-    user,
-  });
+  if (user.isAdmin) {
+    response.redirect("/admin");
+  } else {
+    response.render("player/index", {
+      user,
+    });
+  }
 });
 
 app.get(
@@ -303,6 +307,16 @@ app.get("/getSportJson", async function (request, response) {
   try {
     const sports = await Sport.getSportName();
     return response.json(sports);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
+app.get("/getSessionJson", async function (request, response) {
+  try {
+    const sessions = await Session.getData();
+    return response.json(sessions);
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
