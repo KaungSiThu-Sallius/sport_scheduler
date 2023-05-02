@@ -458,7 +458,6 @@ app.get(
 app.put(
   "/sessionEdit/:id/:sportId",
   connectEnsureLogin.ensureLoggedIn(),
-  requireAdmin,
   async function (request, response) {
     try {
       await Session.editSession({
@@ -474,6 +473,21 @@ app.put(
       response.redirect("/sessionDetail/" + request.params.id);
     } catch (error) {
       console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.delete(
+  "/sessionEdit/:id/:sportId",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    try {
+      await Session.remove(request.params.id);
+      await UserSession.remove(request.params.id);
+      request.flash("success", "Successfully deleted!");
+      response.redirect("/sportDetail/" + request.params.sportId);
+    } catch (error) {
       return response.status(422).json(error);
     }
   }

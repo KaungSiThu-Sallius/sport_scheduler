@@ -46,6 +46,14 @@ module.exports = (sequelize, DataTypes) => {
         sessionId,
       });
     }
+
+    static remove(sessionId) {
+      return this.destroy({
+        where: {
+          sessionId,
+        },
+      });
+    }
   }
   UserSession.init(
     {

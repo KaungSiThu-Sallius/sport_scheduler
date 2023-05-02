@@ -56,6 +56,14 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    static remove(id) {
+      return this.destroy({
+        where: {
+          id,
+        },
+      });
+    }
+
     static async editSession({
       place,
       dateTime,
