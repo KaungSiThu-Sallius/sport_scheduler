@@ -217,4 +217,41 @@ describe("Sport Scheduler", function () {
 
     expect(afterUpdate).toBe(targetUpdateSlot);
   });
+
+  test("Delete session", async () => {
+    const agent = request.agent(server);
+    await login(agent, "kaung@test.com", "1234");
+
+    let groupedSportResponse = await agent
+      .get("/getSportJson")
+      .set("Accept", "application/json");
+    let parsedGroupedResponse = JSON.parse(groupedSportResponse.text);
+    let sportCount = parsedGroupedResponse.length;
+    let latestSport = parsedGroupedResponse[sportCount - 1];
+
+    let groupedSessionResponse = await agent
+      .get("/getSessionJson")
+      .set("Accept", "application/json");
+    parsedGroupedResponse = JSON.parse(groupedSessionResponse.text);
+    let beforeDeleteCount = parsedGroupedResponse.length;
+    let latestSession = parsedGroupedResponse[beforeDeleteCount - 1];
+
+    res = await agent.get(`/sessionDetail/${latestSession.id}`);
+    csrfToken = extractCsrfToken(res);
+
+    await agent
+      .delete(`/sessionEdit/${latestSession.id}/${latestSport.id}`)
+      .send({
+        _csrf: csrfToken,
+      });
+
+    groupedSessionResponse = await agent
+      .get("/getSessionJson")
+      .set("Accept", "application/json");
+    parsedGroupedResponse = JSON.parse(groupedSessionResponse.text);
+    let afterDeleteCount = parsedGroupedResponse.length;
+    latestSession = parsedGroupedResponse[afterDeleteCount - 1];
+
+    expect(beforeDeleteCount - 1).toBe(afterDeleteCount);
+  });
 });
