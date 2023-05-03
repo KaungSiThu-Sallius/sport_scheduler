@@ -16,11 +16,18 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static addSession({ place, dateTime, players, slot, sportId, userId }) {
+    static async addSession({
+      place,
+      dateTime,
+      players,
+      slot,
+      sportId,
+      userId,
+    }) {
       return this.create({ place, dateTime, players, slot, sportId, userId });
     }
 
-    static getSessionDetail(sportId) {
+    static async getSessionDetail(sportId) {
       return this.findAll({
         where: {
           sportId,
@@ -31,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static getPreviousSessionDetail(sportId) {
+    static async getPreviousSessionDetail(sportId) {
       return this.findAll({
         where: {
           sportId,
@@ -42,11 +49,11 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static getSpecificSession(id) {
+    static async getSpecificSession(id) {
       return this.findByPk(id);
     }
 
-    static updatePlayer(id, players) {
+    static async updatePlayer(id, players) {
       return this.update(
         {
           players,

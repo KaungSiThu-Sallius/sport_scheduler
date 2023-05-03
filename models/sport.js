@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static addSport({ name }) {
+    static async addSport({ name }) {
       return this.create({ name: name });
     }
 
