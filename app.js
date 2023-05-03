@@ -267,16 +267,20 @@ app.get(
   "/sportDetail/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    const sportDetail = await Sport.specificSport(request.params.id);
-    const user = request.user;
-    const session = await Session.getSessionDetail(request.params.id);
-    response.render("sportDetail", {
-      user,
-      sportDetail,
-      session,
-      moment: moment,
-      csrfToken: request.csrfToken(),
-    });
+    try {
+      const sportDetail = await Sport.specificSport(request.params.id);
+      const user = request.user;
+      const session = await Session.getSessionDetail(request.params.id);
+      response.render("sportDetail", {
+        user,
+        sportDetail,
+        session,
+        moment: moment,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
