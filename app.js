@@ -167,6 +167,13 @@ app.get("/signUp", (request, response) => {
 });
 
 app.get("/login", (request, response) => {
+  // await User.adduser({
+  //   name: "Admin",
+  //   email: "admin@gmail.com",
+  //   password:
+  //     "$2b$10$pP0x.znbLJroyTsvLf5IZecQtHP6S6SsR808HJEm69ckNgFTippEe",
+  //   isAdmin: true,
+  // })
   response.render("login", {
     csrfToken: request.csrfToken(),
   });
