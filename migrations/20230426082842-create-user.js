@@ -36,10 +36,15 @@ module.exports = {
         },
       })
       .then(function () {
-        migration.sequelize.query(
-          "insert into users (name, email, password, isAdmin) values ('Admin1', 'admin1@gmail.com,'$2b$10$pP0x.znbLJroyTsvLf5IZecQtHP6S6SsR808HJEm69ckNgFTippEe','true')"
-        );
-        done();
+        queryInterface.bulkInsert("Users", [
+          {
+            name: "Admin1",
+            email: "admin1@gmail.com",
+            password:
+              "$2b$10$pP0x.znbLJroyTsvLf5IZecQtHP6S6SsR808HJEm69ckNgFTippEe",
+            isAdmin: true,
+          },
+        ]);
       });
   },
   async down(queryInterface, Sequelize) {
