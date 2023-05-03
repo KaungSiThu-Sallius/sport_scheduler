@@ -54,6 +54,13 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+    static async _userSession(userId) {
+      return this.findAll({
+        where: {
+          userId,
+        },
+      });
+    }
   }
   UserSession.init(
     {

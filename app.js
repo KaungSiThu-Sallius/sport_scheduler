@@ -117,17 +117,35 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
-app.get("/", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
+app.get("/", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   const user = request.user;
   if (user.isAdmin) {
     response.redirect("/admin");
   } else {
+    let sessions = await UserSession._userSession(user.id);
+    const sportName = await Sport.getSportName();
+    let sessionArr = [];
+    let sportNameArr = [];
+
+    for (let i = 0; i < sessions.length; i++) {
+      sessionArr.push(await Session.getSpecificSession(sessions[i].sessionId));
+    }
+
+    for (let j = 0; j < sessionArr.length; j++) {
+      sportNameArr.push(await Sport.specificSport(sessionArr[j].sportId));
+    }
+
     response.render("player/index", {
       user,
+      sessionArr,
+      sportName,
+      moment: moment,
+      sportNameArr,
     });
   }
 });
 
+// Authentication
 app.get(
   "/admin",
   connectEnsureLogin.ensureLoggedIn(),
@@ -139,34 +157,6 @@ app.get(
       user,
       sportName,
     });
-  }
-);
-
-app.get(
-  "/createSport",
-  connectEnsureLogin.ensureLoggedIn(),
-  requireAdmin,
-  (request, response) => {
-    response.render("admin/sportCreate", {
-      csrfToken: request.csrfToken(),
-    });
-  }
-);
-
-app.post(
-  "/createSport",
-  connectEnsureLogin.ensureLoggedIn(),
-  requireAdmin,
-  async (request, response) => {
-    try {
-      const sport = await Sport.addSport({
-        name: request.body.name,
-      });
-      request.flash("success", "Sport created successfully!");
-      response.redirect("/admin");
-    } catch (err) {
-      console.log(err);
-    }
   }
 );
 
@@ -236,6 +226,35 @@ app.get("/signOut", (request, response, next) => {
     response.redirect("logIn");
   });
 });
+
+//Sport
+app.get(
+  "/createSport",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  (request, response) => {
+    response.render("admin/sportCreate", {
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.post(
+  "/createSport",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  async (request, response) => {
+    try {
+      const sport = await Sport.addSport({
+        name: request.body.name,
+      });
+      request.flash("success", "Sport created successfully!");
+      response.redirect("/admin");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 
 app.get(
   "/sportDetail/:id",
@@ -313,6 +332,25 @@ app.get("/getSportJson", async function (request, response) {
   }
 });
 
+app.get(
+  "/sportPreviousSessionDetail/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const sportDetail = await Sport.specificSport(request.params.id);
+    const user = request.user;
+    const session = await Session.getPreviousSessionDetail(request.params.id);
+    response.render("sportDetailPreviousSession", {
+      user,
+      sportDetail,
+      session,
+      moment: moment,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+// Sessions
+
 app.get("/getSessionJson", async function (request, response) {
   try {
     const sessions = await Session.getData();
@@ -366,6 +404,7 @@ app.get(
   async function (request, response) {
     const user = request.user;
     const sessionDetail = await Session.getSpecificSession(request.params.id);
+    console.log(sessionDetail);
     const sportDetail = await Sport.specificSport(sessionDetail.sportId);
     let isJoined = await UserSession.isJoinded(user.id, sessionDetail.id);
     let players = [];
@@ -402,6 +441,9 @@ app.delete(
   async function (request, response) {
     try {
       await UserSession.userLeave(request.user.id, request.params.id);
+      let session = await Session.getSpecificSession(request.params.id);
+      let slot = session.slot + 1;
+      await Session.updateSlot(request.params.id, slot);
       request.flash("success", "You have leaved your session!");
       return response.json({
         success: true,
@@ -418,6 +460,9 @@ app.post(
   async function (request, response) {
     try {
       await UserSession.joinSession(request.user.id, request.params.id);
+      let session = await Session.getSpecificSession(request.params.id);
+      let slot = session.slot - 1;
+      await Session.updateSlot(request.params.id, slot);
       request.flash("success", "You have joined this session!");
       return response.json({
         success: true,
@@ -443,6 +488,8 @@ app.put(
       }
       players = players.toString();
       await Session.updatePlayer(request.params.id, players);
+      let slot = sessionDetail.slot + 1;
+      await Session.updateSlot(request.params.id, slot);
       request.flash("success", "You have removed the player!");
       response.redirect("/sessionDetail/" + request.params.id);
     } catch (error) {
@@ -508,23 +555,6 @@ app.delete(
 );
 
 app.get(
-  "/sportPreviousSessionDetail/:id",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    const sportDetail = await Sport.specificSport(request.params.id);
-    const user = request.user;
-    const session = await Session.getPreviousSessionDetail(request.params.id);
-    response.render("sportDetailPreviousSession", {
-      user,
-      sportDetail,
-      session,
-      moment: moment,
-      csrfToken: request.csrfToken(),
-    });
-  }
-);
-
-app.get(
   "/sessionPreviousDetail/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
@@ -561,6 +591,3 @@ app.get(
 );
 
 module.exports = app;
-
-// when rendering ejs page
-// add -> csrf: request.csrfToken()

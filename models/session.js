@@ -1,5 +1,5 @@
 "use strict";
-const { Model, Op } = require("sequelize");
+const { Model, Op, where } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Session extends Model {
     /**
@@ -73,6 +73,19 @@ module.exports = (sequelize, DataTypes) => {
           id,
         },
       });
+    }
+
+    static async updateSlot(id, slot) {
+      return this.update(
+        {
+          slot: slot,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
     }
 
     static async editSession({

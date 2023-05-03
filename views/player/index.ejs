@@ -34,10 +34,34 @@
                     </div>
                     <div>
                         <div class="playerSessionBox">
-                            <a href="">
-                                <span class="sportName">Football</span>May 1, 2023 5:30 PM<span class="slot">Full
-                                    Slot</span>
-                            </a>
+                            <% if(sessionArr.length==0){ %>
+                                <p class="text-xl noData">Currently, there is no sessions!</p>
+                                <% }else{ %>
+                                    <% for(var i=0;i<sessionArr.length; i++){ %>
+                                        <a href="/sessionDetail/<%= sessionArr[i].id %>">
+                                            <% for(let j=0;j<sportNameArr.length;j++){ %>
+                                                <span>
+                                                    <% if(sportNameArr[i].id==sessionArr[i].sportId){ %>
+                                                        <span class="sportName">
+                                                            <%= sportNameArr[i].name %>
+                                                        </span>
+
+                                                        <% break %>
+                                                            <% } %>
+                                                </span>
+                                                <% } %>
+                                                    <%= moment(sessionArr[i].dateTime).format('Do MMMM, YYYY | hh:mm A')
+                                                        %><span class="slot">
+                                                            <% if(sessionArr[i].slot==0){ %>
+                                                                <span class="text-red-700">Full Slot</span>
+                                                                <% }else{ %>
+                                                                    <%= sessionArr[i].slot %> Slot
+                                                                        <% } %>
+
+                                                        </span>
+                                        </a>
+                                        <% } %>
+                                            <% } %>
                         </div>
                     </div>
                 </div>
@@ -47,8 +71,11 @@
                         </p>
                     </div>
                     <div>
-                        <a href="#" class="underline text-2xl block pb-2">Cricket</a>
-                        <a href="#" class="underline text-2xl block pb-2">Football</a>
+                        <% for(var i=0;i<sportName.length; i++){ %>
+                            <a href="/sportDetail/<%= sportName[i].id %>" class="underline text-2xl block pb-2">
+                                <%= sportName[i].name %>
+                            </a>
+                            <% } %>
                     </div>
                 </div>
             </div>

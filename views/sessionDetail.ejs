@@ -162,7 +162,7 @@
                                     <%= players[i] %>
                                         <% if(user.name.localeCompare(players[i])==0){ %>
                                             (Oraganizer)
-                                            <% }else{ if(originalLength>i){ %>
+                                            <% }else{ if(originalLength>i && user.isAdmin==true){ %>
                                                 <form method="POST" id="removePlayer_<%= players[i] %>"
                                                     class="inline-block"
                                                     action="/removePlayer/<%= sessionDetail.id %>/<%= players[i] %>?_method=PUT">
@@ -180,10 +180,10 @@
                                     <% } %>
                 </div>
                 <div class="mx-14 py-4">
-                    <% if(isJoined.length==0){ %>
+                    <% if(isJoined.length==0){ if(sessionDetail.slot!=0){ %>
                         <a href="#" class="underline text-lg block pb-2" onclick="joinSession(<%= sessionDetail.id %>)">
                             Join the session</a>
-                        <% }else{ %>
+                        <% } }else{ %>
                             <a href="#" class="underline text-lg block pb-2"
                                 onclick="leaveSession(<%= sessionDetail.id %>)">Leave the session</a>
                             <% } %>
