@@ -39,26 +39,27 @@
                                 <% }else{ %>
                                     <% for(var i=0;i<sessionArr.length; i++){ %>
                                         <a href="/sessionDetail/<%= sessionArr[i].id %>">
-                                            <% for(let j=0;j<sportNameArr.length;j++){ %>
-                                                <span>
+                                            <span>
+                                                <% for(let j=0;j<sportNameArr.length;j++){ %>
+
                                                     <% if(sportNameArr[i].id==sessionArr[i].sportId){ %>
                                                         <span class="sportName">
                                                             <%= sportNameArr[i].name %>
                                                         </span>
-
                                                         <% break %>
                                                             <% } %>
-                                                </span>
-                                                <% } %>
-                                                    <%= moment(sessionArr[i].dateTime).format('Do MMMM, YYYY | hh:mm A')
-                                                        %><span class="slot">
-                                                            <% if(sessionArr[i].slot==0){ %>
-                                                                <span class="text-red-700">Full Slot</span>
-                                                                <% }else{ %>
-                                                                    <%= sessionArr[i].slot %> Slot
-                                                                        <% } %>
 
-                                                        </span>
+                                            </span>
+                                            <% } %>
+                                                <%= moment(sessionArr[i].dateTime).format('Do MMMM, YYYY | hh:mm A') %>
+                                                    <span class="slot">
+                                                        <% if(sessionArr[i].slot==0){ %>
+                                                            <span class="text-red-700">Full Slot</span>
+                                                            <% }else{ %>
+                                                                <%= sessionArr[i].slot %> Slot
+                                                                    <% } %>
+
+                                                    </span>
                                         </a>
                                         <% } %>
                                             <% } %>

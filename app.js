@@ -601,4 +601,73 @@ app.get(
   }
 );
 
+//Reports
+app.get(
+  "/reports",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  (request, response) => {
+    response.render("admin/reports", {
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.post(
+  "/reports",
+  connectEnsureLogin.ensureLoggedIn(),
+  requireAdmin,
+  async (request, response) => {
+    let startDate = moment(request.body.start).format("YYYY-MM-DD");
+    let _startDate = new Date(startDate);
+    let endDate = moment(request.body.end).format("YYYY-MM-DD");
+    let _endDate = new Date(endDate);
+    let sportSession = await Session.allSportSessions(_startDate, _endDate);
+    let totoalSessionsLength = sportSession.length;
+    let sportNameArr = [];
+    let _sportArr = [];
+    let _sportNameArr = [];
+    let _noSession = [];
+    for (let j = 0; j < sportSession.length; j++) {
+      let sportName = await Sport.specificSport(sportSession[j].sportId);
+      sportNameArr.push(sportName);
+      if (!_sportNameArr.includes(sportName.name)) {
+        _sportArr[sportName.id] = sportName.name;
+        _sportNameArr.push(sportName.name);
+      }
+    }
+
+    for (const key in _sportArr) {
+      let number = await Session.getSessionCountBySport(
+        key,
+        startDate,
+        endDate
+      );
+      _noSession[_sportArr[key]] = number;
+    }
+
+    // let porpularitySport = {}
+
+    // for (const key in _noSession) {
+    //   let porpularity = _noSession[key] / totoalSessionsLength;
+    //   porpularitySport[key] = porpularity;
+    // }
+
+    // for (const key in porpularitySport) {
+    //   console.log(key + " " + porpularitySport[key])
+    // }
+
+    response.render("admin/reportDetails", {
+      sportNameArr,
+      startDate,
+      endDate,
+      totoalSessionsLength,
+      sportSession,
+      moment: moment,
+      _noSession,
+      csrfToken: request.body._csrf,
+    });
+  }
+);
+
 module.exports = app;

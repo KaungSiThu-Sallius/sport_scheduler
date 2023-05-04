@@ -117,6 +117,30 @@ module.exports = (sequelize, DataTypes) => {
     static async getData() {
       return this.findAll();
     }
+
+    static async allSportSessions(startDate, endDate) {
+      return this.findAll({
+        where: {
+          dateTime: {
+            [Op.and]: [
+              { [Op.gte]: startDate },
+              { [Op.lte]: endDate }, // Add 86399999 milliseconds to include the end dat
+            ],
+          },
+        },
+      });
+    }
+
+    static async getSessionCountBySport(sportId, startDate, endDate) {
+      return this.count({
+        where: {
+          dateTime: {
+            [Op.between]: [startDate, endDate],
+          },
+          sportId,
+        },
+      });
+    }
   }
   Session.init(
     {
