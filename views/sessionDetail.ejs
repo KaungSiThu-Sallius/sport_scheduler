@@ -160,7 +160,7 @@
                             <% for(let i=0;i<players.length;i++){ %>
                                 <div class="nameBox inline-block">
                                     <%= players[i] %>
-                                        <% if(user.name.localeCompare(players[i])==0){ %>
+                                        <% if(organizerName.name.localeCompare(players[i])==0){ %>
                                             (Oraganizer)
                                             <% }else{ if(originalLength>i && user.isAdmin==true){ %>
                                                 <form method="POST" id="removePlayer_<%= players[i] %>"

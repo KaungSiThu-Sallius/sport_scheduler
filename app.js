@@ -434,6 +434,9 @@ app.get(
         players.push(specificUser.name);
       }
     }
+    let organizerId = await UserSession.getUserId(request.params.id);
+    let organizerName = await User.getName(organizerId.userId);
+
     response.render("sessionDetail", {
       isJoined,
       user,
@@ -442,6 +445,7 @@ app.get(
       sportDetail,
       players,
       originalLength,
+      organizerName,
       csrfToken: request.csrfToken(),
     });
   }
