@@ -401,6 +401,7 @@ app.post(
         sportId: sportId,
         userId: user.id,
       });
+      await UserSession.joinSession(request.user.id, session.id);
       request.flash("success", "Session created successfully!");
       response.redirect("/sportDetail/" + sportId);
     } catch (err) {
