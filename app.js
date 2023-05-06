@@ -128,7 +128,7 @@ app.get("/", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     let sportNameArr = [];
 
     for (let i = 0; i < sessions.length; i++) {
-      sessionArr.push(await Session.getSpecificSession(sessions[i].sessionId));
+      sessionArr.push(await Session.getSpecificSession2(sessions[i].sessionId));
     }
 
     for (let j = 0; j < sessionArr.length; j++) {
@@ -271,6 +271,7 @@ app.get(
       const sportDetail = await Sport.specificSport(request.params.id);
       const user = request.user;
       const session = await Session.getSessionDetail(request.params.id);
+      // const userSession = await
       response.render("sportDetail", {
         user,
         sportDetail,
