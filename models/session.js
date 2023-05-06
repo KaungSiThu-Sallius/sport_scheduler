@@ -53,6 +53,17 @@ module.exports = (sequelize, DataTypes) => {
       return this.findByPk(id);
     }
 
+    static async getSpecificSession2(id) {
+      return this.findOne({
+        where: {
+          id,
+          dateTime: {
+            [Op.gt]: new Date(),
+          },
+        },
+      });
+    }
+
     static async updatePlayer(id, players) {
       return this.update(
         {
