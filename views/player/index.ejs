@@ -19,75 +19,84 @@
                 <%=messages.success %>
             </p>
         </div>
-        <% } %>
-            <div class="bg h-screen">
-                <div class="upperDiv p-10">
-                    <div>
-                        <h1 class="text-5xl font-medium mb-5 inline-block">Welcome <%= user.name %>!
-                        </h1>
-                        <a href="/signOut"
-                            class="float-right btn mt-4 mr-10  py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Sign
-                            Out</a>
-                    </div>
-                    <div class="mb-8">
-                        <p class="para text-xl">Sign In as Player</p>
-                    </div>
-                    <div>
-                        <div class="playerSessionBox">
-                            <% if(sessionArr.length==0){ %>
-                                <p class="text-xl noData">Currently, there is no sessions!</p>
-                                <% }else{ %>
-                                    <% for(var i=0;i<sessionArr.length; i++){ %>
-                                        <a href="/sessionDetail/<%= sessionArr[i].id %>">
-                                            <span>
-                                                <% for(let j=0;j<sportNameArr.length;j++){ %>
+        <% }if(messages.failed){ %>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 warnedAlert" role="alert">
+                <p class="font-bold">
+                    <%=messages.failed %>
+                </p>
+            </div>
+            <% } %>
 
-                                                    <% if(sportNameArr[i].id==sessionArr[i].sportId){ %>
-                                                        <span class="sportName">
-                                                            <%= sportNameArr[i].name %>
+                <div class="bg h-screen">
+                    <div class="upperDiv p-10">
+                        <div>
+                            <h1 class="text-5xl font-medium mb-5 inline-block">Welcome <%= user.name %>!
+                            </h1>
+                            <a href="/signOut"
+                                class="float-right btn mt-4 mr-10  py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Sign
+                                Out</a>
+                        </div>
+                        <div class="mb-8">
+                            <p class="para text-xl">Sign In as Player</p>
+                        </div>
+                        <div>
+                            <div class="playerSessionBox">
+                                <% if(sessionArr.length==0){ %>
+                                    <p class="text-xl noData">Currently, there is no sessions!</p>
+                                    <% }else{ %>
+                                        <% for(var i=0;i<sessionArr.length; i++){ %>
+                                            <a href="/sessionDetail/<%= sessionArr[i].id %>">
+                                                <span>
+                                                    <% for(let j=0;j<sportNameArr.length;j++){ %>
+
+                                                        <% if(sportNameArr[i].id==sessionArr[i].sportId){ %>
+                                                            <span class="sportName">
+                                                                <%= sportNameArr[i].name %>
+                                                            </span>
+                                                            <% break %>
+                                                                <% } %>
+
+                                                </span>
+                                                <% } %>
+                                                    <%= moment(sessionArr[i].dateTime).format('Do MMMM, YYYY | hh:mm A')
+                                                        %>
+                                                        <span class="slot">
+                                                            <% if(sessionArr[i].slot==0){ %>
+                                                                <span class="text-red-700">Full Slot</span>
+                                                                <% }else{ %>
+                                                                    <%= sessionArr[i].slot %> Slot
+                                                                        <% } %>
+
                                                         </span>
-                                                        <% break %>
-                                                            <% } %>
-
-                                            </span>
+                                            </a>
                                             <% } %>
-                                                <%= moment(sessionArr[i].dateTime).format('Do MMMM, YYYY | hh:mm A') %>
-                                                    <span class="slot">
-                                                        <% if(sessionArr[i].slot==0){ %>
-                                                            <span class="text-red-700">Full Slot</span>
-                                                            <% }else{ %>
-                                                                <%= sessionArr[i].slot %> Slot
-                                                                    <% } %>
-
-                                                    </span>
-                                        </a>
-                                        <% } %>
-                                            <% } %>
+                                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pl-14 py-10 lowerDiv">
+                        <div>
+                            <p class="mb-5 text-xl text-gray-700">The following sports are available. Please select
+                                one:
+                            </p>
+                        </div>
+                        <div>
+                            <% for(var i=0;i<sportName.length; i++){ %>
+                                <a href="/sportDetail/<%= sportName[i].id %>" class="underline text-2xl block pb-2">
+                                    <%= sportName[i].name %>
+                                </a>
+                                <% } %>
                         </div>
                     </div>
                 </div>
-                <div class="pl-14 py-10 lowerDiv">
-                    <div>
-                        <p class="mb-5 text-xl text-gray-700">The following sports are available. Please select one:
-                        </p>
-                    </div>
-                    <div>
-                        <% for(var i=0;i<sportName.length; i++){ %>
-                            <a href="/sportDetail/<%= sportName[i].id %>" class="underline text-2xl block pb-2">
-                                <%= sportName[i].name %>
-                            </a>
-                            <% } %>
-                    </div>
-                </div>
-            </div>
-            <script>
-                setTimeout(function () {
-                    $('.warnedAlert').hide();
-                }, 3000);
-            </script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
-                integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
-                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script>
+                    setTimeout(function () {
+                        $('.warnedAlert').hide();
+                    }, 3000);
+                </script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
+                    integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
+                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 </html>

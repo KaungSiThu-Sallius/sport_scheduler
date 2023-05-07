@@ -128,9 +128,11 @@ app.get("/", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     let sportNameArr = [];
 
     for (let i = 0; i < sessions.length; i++) {
-      sessionArr.push(await Session.getSpecificSession2(sessions[i].sessionId));
+      let data = await Session.getSpecificSession2(sessions[i].sessionId);
+      if (data != null) {
+        sessionArr.push(data);
+      }
     }
-
     for (let j = 0; j < sessionArr.length; j++) {
       sportNameArr.push(await Sport.specificSport(sessionArr[j].sportId));
     }
@@ -183,6 +185,11 @@ app.post("/users", async (request, response) => {
   let _password = request.body.password;
   let cPassword = request.body.c_password;
   let isAdmin = 0;
+  let isEmailExist = await User.isEmailExist(request.body.email);
+  if (isEmailExist.length > 0) {
+    request.flash("failed", "Email already Registered!");
+    response.redirect("/");
+  }
   if (request.body.isAdmin != null) {
     isAdmin = 1;
   }
@@ -271,12 +278,39 @@ app.get(
       const sportDetail = await Sport.specificSport(request.params.id);
       const user = request.user;
       const session = await Session.getSessionDetail(request.params.id);
-      // const userSession = await
+      const userJoined = await UserSession._userSession(user.id);
+      let joinedSessionsArr = [];
+      for (let i = 0; i < userJoined.length; i++) {
+        let data = await Session.getSessionById(
+          userJoined[i].sessionId,
+          sportDetail.id
+        );
+        if (data != null) {
+          joinedSessionsArr.push(data);
+        }
+      }
+
+      let upComingSession = [];
+      let flag;
+      console.log("sessoinLength: " + session.length);
+      console.log("Joied Length: " + joinedSessionsArr.length);
+      for (let j = 0; j < session.length; j++) {
+        flag = 1;
+        for (let i = 0; i < joinedSessionsArr.length; i++) {
+          if (session[j].id == joinedSessionsArr[i].id) {
+            flag = 0;
+          }
+        }
+        if (flag == 1) {
+          upComingSession.push(session[j]);
+        }
+      }
       response.render("sportDetail", {
         user,
         sportDetail,
-        session,
+        upComingSession,
         moment: moment,
+        joinedSessionsArr,
         csrfToken: request.csrfToken(),
       });
     } catch (error) {
@@ -435,8 +469,12 @@ app.get(
         players.push(specificUser.name);
       }
     }
-    let organizerId = await UserSession.getUserId(request.params.id);
-    let organizerName = await User.getName(organizerId.userId);
+    let organizerName = null;
+    let organizerId = await Session.getSpecificSession(request.params.id);
+
+    if (organizerId != null) {
+      organizerName = await User.getName(organizerId.userId);
+    }
 
     response.render("sessionDetail", {
       isJoined,

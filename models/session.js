@@ -152,6 +152,18 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async getSessionById(id, sportId) {
+      return this.findOne({
+        where: {
+          id,
+          sportId,
+          dateTime: {
+            [Op.gt]: new Date(),
+          },
+        },
+      });
+    }
   }
   Session.init(
     {

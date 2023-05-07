@@ -84,32 +84,54 @@
                 <h1 class="mx-14 py-4 text-3xl font-semibold inline-block">
                     <%= sportDetail.name %>
                 </h1>
-
-
-
-
-
             </div>
             <div class="thirdDiv">
                 <h3 class="mx-14 py-4 mt-6 font-medium text-xl">Upcoming Sessions</h3>
                 <div class="mx-14 py-4 sessionBox grid grid-cols-2 gap-2">
-                    <% if(session.length==0){ %>
+                    <% if(upComingSession.length==0){ %>
                         <p class="text-xl noData">Currently, there is no sessions!</p>
                         <% }else{ %>
-                            <% for(let i=0; i<session.length; i++){ %>
-                                <a href="/sessionDetail/<%= session[i].id %>">
-                                    <%= moment(session[i].dateTime).format('Do MMMM, YYYY | hh:mm A') %>
-                                        <% if(session[i].slot==1){ %>
+                            <% for(let i=0; i<upComingSession.length; i++){ %>
+                                <a href="/sessionDetail/<%= upComingSession[i].id %>">
+                                    <%= moment(upComingSession[i].dateTime).format('Do MMMM, YYYY | hh:mm A') %>
+                                        <% if(upComingSession[i].slot==1){ %>
                                             <span class="text-red-700">Last Slot</span>
-                                            <% }else if(session[i].slot==0){%>
+                                            <% }else if(upComingSession[i].slot==0){%>
                                                 <span class="text-red-700">Full Slot</span>
                                                 <%}else{%>
                                                     <span>
-                                                        <%= session[i].slot %> Slot
+                                                        <%= upComingSession[i].slot %> Slot
                                                     </span>
                                                     <%} %>
 
                                 </a>
+
+
+                                <% } %>
+                                    <% } %>
+
+                </div>
+                <h3 class="mx-14 py-4 mt-6 font-medium text-xl">Joined Sessions</h3>
+                <div class="mx-14 py-4 sessionBox grid grid-cols-2 gap-2">
+                    <% if(joinedSessionsArr.length==0){ %>
+                        <p class="text-lg noData">Currently, you havn't joined any sessions!</p>
+                        <% }else{ %>
+                            <% for(let i=0; i<joinedSessionsArr.length; i++){ %>
+                                <a href="/sessionDetail/<%= joinedSessionsArr[i].id %>">
+                                    <%= moment(joinedSessionsArr[i].dateTime).format('Do MMMM, YYYY | hh:mm A') %>
+                                        <% if(joinedSessionsArr[i].slot==1){ %>
+                                            <span class="text-red-700">Last Slot</span>
+                                            <% }else if(joinedSessionsArr[i].slot==0){%>
+                                                <span class="text-red-700">Full Slot</span>
+                                                <%}else{%>
+                                                    <span>
+                                                        <%= joinedSessionsArr[i].slot %> Slot
+                                                    </span>
+                                                    <%} %>
+
+                                </a>
+
+
                                 <% } %>
                                     <% } %>
 

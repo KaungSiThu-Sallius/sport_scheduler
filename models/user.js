@@ -23,6 +23,14 @@ module.exports = (sequelize, DataTypes) => {
     static async getName(id) {
       return this.findByPk(id);
     }
+
+    static async isEmailExist(email) {
+      return this.findAll({
+        where: {
+          email,
+        },
+      });
+    }
   }
   User.init(
     {

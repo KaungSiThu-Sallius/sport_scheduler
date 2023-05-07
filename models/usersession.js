@@ -61,14 +61,6 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
-
-    static async getUserId(sessionId) {
-      return this.findOne({
-        where: {
-          sessionId,
-        },
-      });
-    }
   }
   UserSession.init(
     {
