@@ -20,48 +20,56 @@
             </p>
         </div>
         <% } %>
-            <div class="bg h-screen">
-                <div class="upperDiv p-10">
-                    <div>
-                        <h1 class="text-5xl font-medium inline-block">Welcome <%= user.name %>!</h1>
-                        <a href="/signOut"
-                            class="float-right btn mt-4 mr-10  py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Sign
-                            Out</a>
-                    </div>
-                    <div class="mt-2">
-                        <p class="para text-xl">Sign In as Adminstrator</p>
-                    </div>
-                    <div class="mt-8"> <a href="/createSport"
-                            class="btn  text-lg w-1/6 py-2 px-5 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Create
-                            a new sport</a></div>
-                    <div class="mt-8"> <a href="/reports"
-                            class="btn text-lg  w-2/6 py-2 px-10 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">View
-                            Reports</a></div>
+            <% if(messages.failed){ %>
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 warnedAlert" role="alert">
+                    <p class="font-bold">
+                        <%=messages.failed %>
+                    </p>
                 </div>
-                <div class="pl-14 py-10 lowerDiv">
-                    <div>
-                        <p class="mb-5 text-xl text-gray-700">The following sports are available. Please select one:
-                        </p>
-                    </div>
-                    <div>
-                        <% for(var i=0;i<sportName.length; i++){ %>
-                            <a href="/sportDetail/<%= sportName[i].id %>" class="underline text-2xl block pb-2">
-                                <%= sportName[i].name %>
-                            </a>
-                            <% } %>
+                <% } %>
+                    <div class="bg h-screen">
+                        <div class="upperDiv p-10">
+                            <div>
+                                <h1 class="text-5xl font-medium inline-block">Welcome <%= user.name %>!</h1>
+                                <a href="/signOut"
+                                    class="float-right btn mt-4 mr-10  py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Sign
+                                    Out</a>
+                            </div>
+                            <div class="mt-2">
+                                <p class="para text-xl">Sign In as Adminstrator</p>
+                            </div>
+                            <div class="mt-8"> <a href="/createSport"
+                                    class="btn  text-lg w-1/6 py-2 px-5 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Create
+                                    a new sport</a></div>
+                            <div class="mt-8"> <a href="/reports"
+                                    class="btn text-lg  w-2/6 py-2 px-10 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">View
+                                    Reports</a></div>
+                        </div>
+                        <div class="pl-14 py-10 lowerDiv">
+                            <div>
+                                <p class="mb-5 text-xl text-gray-700">The following sports are available. Please select
+                                    one:
+                                </p>
+                            </div>
+                            <div>
+                                <% for(var i=0;i<sportName.length; i++){ %>
+                                    <a href="/sportDetail/<%= sportName[i].id %>" class="underline text-2xl block pb-2">
+                                        <%= sportName[i].name %>
+                                    </a>
+                                    <% } %>
 
 
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <script>
-                setTimeout(function () {
-                    $('.warnedAlert').hide();
-                }, 3000);
-            </script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
-                integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
-                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                    <script>
+                        setTimeout(function () {
+                            $('.warnedAlert').hide();
+                        }, 3000);
+                    </script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
+                        integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
+                        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </body>
 

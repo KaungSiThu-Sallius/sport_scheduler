@@ -265,11 +265,17 @@ app.post(
   requireAdmin,
   async (request, response) => {
     try {
-      const sport = await Sport.addSport({
-        name: request.body.name,
-      });
-      request.flash("success", "Sport created successfully!");
-      response.redirect("/admin");
+      let sportName = await Sport.isSportExist(request.body.name);
+      if (sportName != null) {
+        request.flash("failed", "Sport Name already exist!");
+        response.redirect("/admin");
+      } else {
+        const sport = await Sport.addSport({
+          name: request.body.name,
+        });
+        request.flash("success", "Sport created successfully!");
+        response.redirect("/admin");
+      }
     } catch (err) {
       console.log(err);
     }
@@ -389,9 +395,15 @@ app.put(
     var name = request.body.name;
     var id = request.params.id;
     try {
-      await Sport.editSport(name, id);
-      request.flash("success", "Successfully updated!");
-      response.redirect("/sportDetail/" + id);
+      let sportName = await Sport.isSportExist(request.body.name);
+      if (sportName != null) {
+        request.flash("failed", "Sport Name already exist!");
+        response.redirect("/sportDetail/" + id);
+      } else {
+        await Sport.editSport(name, id);
+        request.flash("success", "Successfully updated!");
+        response.redirect("/sportDetail/" + id);
+      }
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);

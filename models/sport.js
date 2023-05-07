@@ -43,6 +43,14 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async isSportExist(name) {
+      return this.findOne({
+        where: {
+          name,
+        },
+      });
+    }
   }
   Sport.init(
     {
