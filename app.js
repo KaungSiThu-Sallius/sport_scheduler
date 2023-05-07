@@ -8,7 +8,13 @@ app.use(methodOverride("_method"));
 
 var moment = require("moment");
 
-const { User, Sport, Session, UserSession } = require("./models");
+const {
+  User,
+  Sport,
+  Session,
+  UserSession,
+  CancelSession,
+} = require("./models");
 
 const flash = require("connect-flash");
 const path = require("path");
@@ -291,7 +297,7 @@ app.get(
       }
 
       let upComingSession = [];
-      let flag;
+      let flag = 1;
       console.log("sessoinLength: " + session.length);
       console.log("Joied Length: " + joinedSessionsArr.length);
       for (let j = 0; j < session.length; j++) {
@@ -315,6 +321,47 @@ app.get(
       });
     } catch (error) {
       console.log(error);
+    }
+  }
+);
+
+app.get(
+  "/cancelSession/:sportId/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const sportDetail = await Sport.specificSport(request.params.sportId);
+      const user = request.user;
+      const sessionDetail = await Session.getSpecificSession(request.params.id);
+      response.render("cancelSession", {
+        user,
+        sessionDetail,
+        sportDetail,
+        moment: moment,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+app.post(
+  "/cancelSession/:sportId/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    let sessionId = request.params.id;
+    let reason = request.body.reason;
+    const user = request.user;
+    try {
+      await CancelSession.create({
+        sessionId: sessionId,
+        reason: reason,
+      });
+      request.flash("success", "Session cancel successfully!");
+      response.redirect("/sportDetail/" + request.params.sportId);
+    } catch (err) {
+      console.log(err);
     }
   }
 );
@@ -476,6 +523,13 @@ app.get(
       organizerName = await User.getName(organizerId.userId);
     }
 
+    let isCancel = await CancelSession._isCancel(request.params.id);
+    let isCancelShow = 1;
+    if (isCancel == null) {
+      isCancelShow = 0;
+    }
+
+    console.log(isCancel);
     response.render("sessionDetail", {
       isJoined,
       user,
@@ -485,6 +539,8 @@ app.get(
       players,
       originalLength,
       organizerName,
+      isCancel,
+      isCancelShow,
       csrfToken: request.csrfToken(),
     });
   }
@@ -599,8 +655,10 @@ app.delete(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     try {
+      await CancelSession.remove(request.params.id);
       await Session.remove(request.params.id);
       await UserSession.remove(request.params.id);
+
       request.flash("success", "Successfully deleted!");
       response.redirect("/sportDetail/" + request.params.sportId);
     } catch (error) {
